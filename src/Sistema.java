@@ -15,11 +15,11 @@ public class Sistema {
             System.out.println("4 - Listar todos os cadastrados");
             System.out.println("0 - Sair");
             System.out.print("Digite uma opção: ");
-            
-            opcao = entrada.nextInt();
+                    
+            opcao = entrada.nextInt(); //recebendo os valores do usuario
             entrada.nextLine(); // limpa o buffer
 
-            if (opcao == 1) {
+            if (opcao == 1) { //se
                 System.out.print("Nome: ");
                 String nome = entrada.nextLine();
 
@@ -29,12 +29,13 @@ public class Sistema {
                 System.out.print("CPF: ");
                 String cpf = entrada.nextLine();
 
-                PessoaFisica pf = new PessoaFisica(nome, anoNasc, cpf);
-                lista.add(pf);
+                //criar uma instancia de pessoa fisica com as caract atribuidas na entrada.
+                PessoaFisica pf = new PessoaFisica(nome, anoNasc, cpf); 
+                lista.add(pf); //adicionar a lista
 
                 System.out.println("Pessoa Física cadastrada.");
 
-            } else if (opcao == 2) {
+            } else if (opcao == 2) { //se
                 System.out.print("Nome ou Razão Social: ");
                 String nomeRazaoSocial = entrada.nextLine();
 
@@ -44,22 +45,23 @@ public class Sistema {
                 System.out.print("CNPJ: ");
                 String cnpj = entrada.nextLine();
 
+                //criando uma instancia de pessoa juridica
                 PessoaJuridica pj = new PessoaJuridica(nomeRazaoSocial, anoFundacao, cnpj);
-                lista.add(pj);
+                lista.add(pj); //adicionando a lista essa pessoa
 
                 System.out.println("Pessoa Jurídica cadastrada.");
 
-            } else if (opcao == 3) {
+            } else if (opcao == 3) { //se
+                //digito qual termo quero encontrar
                 System.out.print("Digite termo para buscar (nome, CPF, CNPJ ou ano): ");
                 String termo = entrada.nextLine();
-
                 buscarPessoa(lista, termo);
 
             } else if (opcao == 4) {
-                listarTodos(lista);
+                listarTodos(lista); //funcao que lista todos os valores da lista
             }
 
-        } while (opcao != 0);
+        } while (opcao != 0); //quando opcao for igual a 0:
 
         System.out.println("FIM");
         entrada.close();    
@@ -69,8 +71,8 @@ public class Sistema {
         boolean encontrou = false;
 
         for (IdUnico pessoa : lista) {
-            if (pessoa instanceof PessoaFisica) {
-                PessoaFisica pf = (PessoaFisica) pessoa;
+            if (pessoa instanceof PessoaFisica) { //se a pessoa é uma instancia de pessoa fisica,verifica!!
+                PessoaFisica pf = (PessoaFisica) pessoa; // faz a conversap de pessoa para Pessoa fisica 
 
                 if (pf.getNome().contains(termoBusca) || 
                     pf.getCpf().contains(termoBusca) || 
