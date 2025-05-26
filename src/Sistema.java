@@ -1,76 +1,118 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+
 public class Sistema {
-    public static void main(String[] args) {
-        
-    Scanner entrada = new Scanner(System.in);
-    ArrayList<IdUnico> lista = new ArrayList<>();
+    public static void main(String[] args) {    
+        ArrayList<IdUnico> lista = new ArrayList<>();
+        Scanner entrada = new Scanner(System.in);
+        int opcao;
 
-    boolean continuar = true;
+        do {
+            System.out.println("\n--- MENU ---");
+            System.out.println("1 - Cadastrar PF");
+            System.out.println("2 - Cadastrar PJ");
+            System.out.println("3 - Buscar por Nome, CPF, CNPJ ou ano");
+            System.out.println("4 - Listar todos os cadastrados");
+            System.out.println("0 - Sair");
+            System.out.print("Digite uma opção: ");
+            
+            opcao = entrada.nextInt();
+            entrada.nextLine(); // limpa o buffer
 
-    while(continuar){
-    System.out.println("Digite\n1 - Pessoa Fisica\n2 - Pessoa Juridica\n0- Encerrar");
-    int opcao = entrada.nextInt(); //opcao captura a opcao do usuario
-    entrada.nextLine(); //Limpa o buffer 
-    
+            if (opcao == 1) {
+                System.out.print("Nome: ");
+                String nome = entrada.nextLine();
 
-    if(opcao == 1 ){
-        System.out.println("Nome:");
-        String nome = entrada.nextLine(); //limpa o buffer
-        
-        System.out.println("Ano de Nascimento:");
-        String anoNasc = entrada.nextLine();
+                System.out.print("Ano de Nascimento: ");
+                String anoNasc = entrada.nextLine();
 
-        System.out.println("CPF");
-        String cpf = entrada.nextLine();
+                System.out.print("CPF: ");
+                String cpf = entrada.nextLine();
 
-        PessoaFisica pf = new PessoaFisica(nome, anoNasc, cpf);
-        lista.add(pf);
+                PessoaFisica pf = new PessoaFisica(nome, anoNasc, cpf);
+                lista.add(pf);
 
-        System.out.println("Pessoa Fisica Cadastrada.");
+                System.out.println("Pessoa Física cadastrada.");
 
-    } else if(opcao == 2){
-        System.out.println("Nome Razao Social:");
-        String nomeRazaoSocial = entrada.nextLine();
+            } else if (opcao == 2) {
+                System.out.print("Nome ou Razão Social: ");
+                String nomeRazaoSocial = entrada.nextLine();
 
-        System.out.println("Ano fundacao:");
-        int anoFundancao = Integer.parseInt(entrada.nextLine());
+                System.out.print("Ano de Fundação: ");
+                int anoFundacao = Integer.parseInt(entrada.nextLine());
 
-        System.out.println("CNPJ");
-        String cnpj = entrada.nextLine();
+                System.out.print("CNPJ: ");
+                String cnpj = entrada.nextLine();
 
-        PessoaJuridica pj = new PessoaJuridica(nomeRazaoSocial, anoFundancao, cnpj);
-        lista.add(pj);
+                PessoaJuridica pj = new PessoaJuridica(nomeRazaoSocial, anoFundacao, cnpj);
+                lista.add(pj);
 
-        System.out.println("Pessoa Juridica Cadastrada");
+                System.out.println("Pessoa Jurídica cadastrada.");
 
+            } else if (opcao == 3) {
+                System.out.print("Digite termo para buscar (nome, CPF, CNPJ ou ano): ");
+                String termo = entrada.nextLine();
 
-    } else if(opcao == 0){
-        continuar = false;
-    } else{
-        System.out.println("Opcao Invalida!\n");
+                buscarPessoa(lista, termo);
+
+            } else if (opcao == 4) {
+                listarTodos(lista);
+            }
+
+        } while (opcao != 0);
+
+        System.out.println("FIM");
+        entrada.close();    
     }
+
+    public static void buscarPessoa(ArrayList<IdUnico> lista, String termoBusca) {
+        boolean encontrou = false;
+
+        for (IdUnico pessoa : lista) {
+            if (pessoa instanceof PessoaFisica) {
+                PessoaFisica pf = (PessoaFisica) pessoa;
+
+                if (pf.getNome().contains(termoBusca) || 
+                    pf.getCpf().contains(termoBusca) || 
+                    pf.getAnoNasc().contains(termoBusca)) {
+                    System.out.println("Pessoa Física encontrada:");
+                    System.out.println("ID:" + pf.getId() + ", Nome: " + pf.getNome() + ", CPF: " + pf.getCpf() + ", Ano: " + pf.getAnoNasc());
+                    encontrou = true;
+                }
+
+            } else if (pessoa instanceof PessoaJuridica) {
+                PessoaJuridica pj = (PessoaJuridica) pessoa;
+
+                if (pj.getNomeRazaoSocial().contains(termoBusca) || 
+                    pj.getCnpj().contains(termoBusca) || 
+                    String.valueOf(pj.getAnoFundacao()).contains(termoBusca)) {
+                    System.out.println("Pessoa Jurídica encontrada:");
+                    System.out.println("ID:" + pj.getId() +", Razão Social: " + pj.getNomeRazaoSocial() + ", CNPJ: " + pj.getCnpj() + ", Ano: " + pj.getAnoFundacao());
+                    encontrou = true;
+                }
+            }
+        }
+
+        if (!encontrou) {
+            System.out.println("Nenhuma pessoa encontrada com esse termo.");
+        }
     }
 
-    //Mostrando Lista
-    System.out.println("\n Lista de Cadastrados");
-    for(IdUnico pessoa : lista){ //for (Tipo item : lista)
-        System.out.println("ID:" + pessoa.getId());
-        if(pessoa instanceof PessoaFisica){
-            PessoaFisica pf = (PessoaFisica) pessoa;
+    public static void listarTodos(ArrayList<IdUnico> lista) {
+        if (lista.isEmpty()) {
+            System.out.println("Nenhuma pessoa cadastrada.");
+            return;
+        }
 
-            System.out.println("Tipo: PF    | Nome:" + pf.getNome() +
-                                          " | Ano Nascimento:" + pf.getAnoNasc()+
-                                          " | CPF:" + pf.getCpf());
-        }else if(pessoa instanceof PessoaJuridica){
-            PessoaJuridica pj = (PessoaJuridica) pessoa;
-            System.out.println("Tipo: PJ | Razao Social:" + pj.getNomeRazaoSocial()+
-                                       " | Ano da Fundacao:" + pj.getAnoFundacao() +
-                                       " | CNPJ:" + pj.getCnpj());
-        } System.err.println();
+        System.out.println("\n--- Lista de Pessoas Cadastradas ---");
+        for (IdUnico pessoa : lista) {
+            if (pessoa instanceof PessoaFisica) {
+                PessoaFisica pf = (PessoaFisica) pessoa;
+                System.out.println("Pessoa Física |" + "ID: " + pf.getId() + ", Nome: " + pf.getNome() + ", CPF: " + pf.getCpf() + ", Ano: " + pf.getAnoNasc());
+            } else if (pessoa instanceof PessoaJuridica) {
+                PessoaJuridica pj = (PessoaJuridica) pessoa;
+                System.out.println("Pessoa Jurídica |" + "ID: " + pj.getId() +", Razão Social: " + pj.getNomeRazaoSocial() + ", CNPJ: " + pj.getCnpj() + ", Ano: " + pj.getAnoFundacao());
+            }
+        }
     }
-    entrada.close();
-
-}
-
 }
